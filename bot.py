@@ -31,7 +31,7 @@ all_orders = {}  # номер чека -> данные
 def make_main_menu():
     keyboard = [
         [InlineKeyboardButton("📋 Индивидуальный проект — 1 200 ₽", callback_data="tariff_ind")],
-        [InlineKeyboardButton("📞 Связаться с исполнителем", url="https://t.me/alehin_md")],
+        [InlineKeyboardButton("📞 Связаться с исполнителем", url="https://t.me/Inikoss")],
     ]
     return InlineKeyboardMarkup(keyboard)
 
@@ -105,7 +105,14 @@ def make_bank_keyboard(cn: str, summa: int):
     return InlineKeyboardMarkup(keyboard)
 
 
-# ── /start ──
+# ── /test ──
+async def test_notify(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    uid = update.message.from_user.id
+    await update.message.reply_text(f"Твой ID: `{uid}`\nOWNER_ID в боте: `{OWNER_ID}`", parse_mode="Markdown")
+    if OWNER_ID and uid == OWNER_ID:
+        await update.message.reply_text("✅ Ты исполнитель! Уведомления будут приходить сюда.")
+    else:
+        await update.message.reply_text(f"⚠️ Твой ID ({uid}) не совпадает с OWNER_ID ({OWNER_ID})")
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "👋 Привет! Это бот Алёхина М.Д.\n"
@@ -240,6 +247,7 @@ def main():
     )
 
     app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("test", test_notify))
     app.add_handler(conv)
     app.add_handler(CallbackQueryHandler(paid_callback, pattern="^paid_"))
 
